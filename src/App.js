@@ -1,11 +1,42 @@
-import React from "react";
-import "./styles.css";
+import React, { useState } from "react";
+import "./app.css";
+import CourseGoalList from "./components/CourseGoals/CourseGoalList/CourseGoalList";
+import CourseGoalInput from "./components/CourseInput/CourseInput";
 
-export default function App() {
+const App = () => {
+  const [courseGoals, setCourseGoals] = useState([
+    { text: "Do all exercises!", id: "g1" },
+    { text: "Finish the course!", id: "g2" }
+  ]);
+
+  const addGoalHandler = (enteredText) => {
+    setCourseGoals((prevGoals) => {
+      const updatedGoals = [...prevGoals];
+      updatedGoals.unshift({ text: enteredText, id: Math.random().toString() });
+      return updatedGoals;
+    });
+  };
+  const deleteGoalHandler = (goalId) => {
+    setCourseGoals((prevGoals) => {
+      const updatedGoals = prevGoals.filter((goal) => goal.id !== goalId);
+      return updatedGoals;
+    });
+  };
+  let content = (
+    <p style={{ textAlign: "center" }}>No goals found. Maybe add one?</p>
+  );
+  if (courseGoals.length > 0) {
+    content = (
+      <CourseGoalList items={courseGoals} onDeleteGoal={deleteGoalHandler} />
+    );
+  }
   return (
-    <div className="App">
-      <h1>Hello CodeSandbox</h1>
-      <h2>Start editing to see some magic happen!</h2>
+    <div>
+      <section id="goal-form">
+        <CourseGoalInput onAddGoal={addGoalHandler} />
+      </section>
+      <section id="goals">{content}</section>
     </div>
   );
-}
+};
+export default App;
